@@ -1,0 +1,73 @@
+﻿@{
+    string title = "Leitor de Nota Fiscal";
+
+    ViewData["Title"] = title;
+}
+
+<div class="card my-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img id="imagemPreview" class="img-fluid rounded-start" src="~/images/sem-imagem.jpg" alt="Pré-visualização da Imagem">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h4 class="card-title">@title</h4>
+                <form id="formulario" method="post" enctype="multipart/form-data">
+                    <div class="input-group">
+                        <input type="file" name="image" accept="image/*" class="form-control" id="image" aria-describedby="enviarFormulario" aria-label="Upload" required>
+                        <button class="btn btn-outline-secondary" id="enviarFormulario" type="submit">Ler</button>
+                    </div>
+                </form>
+                <section>
+                    <h5>Resultado</h5>
+                    <p class="card-text" id="_result"></p>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#image").change(function () {
+                exibirPrevisaoImagem(this);
+            });
+            $("#formulario").submit(function (event) {
+                if (!this.checkValidity()) {
+                    event.preventDefault();
+                } else {
+                    event.preventDefault();
+                    var formularioData = new FormData(this);
+
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("RealizarLeitura", "Home")',
+                        data: formularioData,
+                        contentType: false,
+                        processData: false,
+                        success: function (success) {
+                            $("#_result").html(success.result)
+                            console.log(success.result);
+                        },
+                        error: function (error) {
+                            console.log(error.result);
+                        }
+                    });
+                }
+            });
+        });
+
+        function exibirPrevisaoImagem(input) {
+            if (input.files && input.files[0]) {
+                var leitor = new FileReader();
+
+                leitor.onload = function (e) {
+                    $("#imagemPreview").attr("src", e.target.result);
+                };
+
+                leitor.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}
