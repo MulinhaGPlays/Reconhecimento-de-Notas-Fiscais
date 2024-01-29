@@ -48,7 +48,10 @@
                         processData: false,
                         success: function (success) {
                             $("#_result").html(success.result)
-                            console.log(success.result);
+                            console.log(success.cnpj);
+                            console.log(success.numeroCupom);
+                            console.log(success.chaveCupom);
+                            console.log(success.dataHoraCompra);
                         },
                         error: function (error) {
                             console.log(error.result);

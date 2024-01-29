@@ -1,7 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Emgu.CV;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
+using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using PrototipoLeitorTesseract.Extensions;
 using PrototipoLeitorTesseract.Models;
+using PrototipoLeitorTesseract.Services;
+using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Text.RegularExpressions;
 using Tesseract;
 
 namespace PrototipoLeitorTesseract.Controllers
@@ -9,10 +19,14 @@ namespace PrototipoLeitorTesseract.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ImageService _imgService;
+        private readonly TesseractService _tesService;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+            _imgService = new ImageService();
+            _tesService = new TesseractService();
         }
 
         public IActionResult Index()
@@ -26,17 +40,19 @@ namespace PrototipoLeitorTesseract.Controllers
         {
             try
             {
-                using var stream = new MemoryStream();
-                await image.CopyToAsync(stream);
+                string path = await _imgService.ImageSaver(image);
+                string text = _tesService.ReadImage(path);
+                _imgService.DeleteImage();
 
-                using var engine = new TesseractEngine(@"wwwroot/tessdata", "por", EngineMode.Default);
-
-                using var img = Pix.LoadFromMemory(stream.ToArray());
-                using var page = engine.Process(img);
-
-                var text = page.GetText().Replace("\n", "<br/>");
-
-                return Json(new { success = true, result = text });
+                return Json(new 
+                { 
+                    success = true, 
+                    result = text.Replace("\n", "<br/>"),
+                    cnpj = text.RegexCNPJ(),
+                    chaveCupom = text.RegexChaveCupom(),
+                    numeroCupom = text.RegexNumeroCupom(),
+                    dataHoraCompra = text.RegexDataHoraCompra(),
+                });
             }
             catch (Exception ex)
             {
