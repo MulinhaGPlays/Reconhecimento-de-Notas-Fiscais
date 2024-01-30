@@ -10,6 +10,13 @@ namespace PrototipoLeitorTesseract.Extensions
             var match = regex.Match(input);
             return match.Success ? match.Value : "Não Encontrado";
         }
+        
+        static string[] ExtractDatas(string input, string pattern)
+        {
+            var regex = new Regex(pattern);
+            var matches = regex.Matches(input);
+            return matches.Select(m => m.Value).ToArray();
+        }
 
         public static string RegexCNPJ(this string input, string pattern = @"(([A-Za-z]{4}[-])?)\b\d{2}[.,]\d{3}[.,]\d{3}/\d{4}-\d{2}\b")
         {
@@ -27,6 +34,11 @@ namespace PrototipoLeitorTesseract.Extensions
         }
         
         public static string RegexDataHoraCompra(this string input, string pattern = @"\b\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2}\b")
+        {
+            return ExtractData(input, pattern);
+        }
+        
+        public static string RegexDadosProdutos(this string input, string pattern = @"\b((\d{1,2}\s\S{9})|(\d{3}\s\S{6}))\s(.*?)(?=([Tt1])?[0Oo][Tt1][Aa][Ll1i])")
         {
             return ExtractData(input, pattern);
         }

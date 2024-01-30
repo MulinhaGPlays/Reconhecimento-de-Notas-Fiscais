@@ -24,11 +24,14 @@ namespace PrototipoLeitorTesseract.Services
             int novaLargura = imagemOriginal.Width * 2;
             int novaAltura = imagemOriginal.Height * 2;
 
-            var imagemRedimensionada = new Mat();
+            var imagemMelhorada = new Mat();
 
-            CvInvoke.Resize(imagemOriginal, imagemRedimensionada, new Size(novaLargura, novaAltura), interpolation: Inter.Linear);
+            CvInvoke.Resize(imagemOriginal, imagemMelhorada, new Size(novaLargura, novaAltura), interpolation: Inter.Linear);
+            CvInvoke.GaussianBlur(imagemMelhorada, imagemMelhorada, new Size(3, 3), 0);
+            CvInvoke.Dilate(imagemMelhorada, imagemMelhorada, null, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(1));
+            CvInvoke.Erode(imagemMelhorada, imagemMelhorada, null, new Point(-1, -1), 1, BorderType.Default, new MCvScalar(1));
 
-            return imagemRedimensionada.ToImage<Bgr, byte>();
+            return imagemMelhorada.ToImage<Bgr, byte>();
         }
 
         public async Task<string> ImageSaver(IFormFile image, string path = @"wwwroot\images\temp_image.png")

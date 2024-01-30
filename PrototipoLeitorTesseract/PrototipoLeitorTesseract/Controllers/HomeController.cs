@@ -52,6 +52,7 @@ namespace PrototipoLeitorTesseract.Controllers
                     chaveCupom = text.RegexChaveCupom(),
                     numeroCupom = text.RegexNumeroCupom(),
                     dataHoraCompra = text.RegexDataHoraCompra(),
+                    produtos = text.Replace("\n", " ").RegexDadosProdutos()
                 });
             }
             catch (Exception ex)
