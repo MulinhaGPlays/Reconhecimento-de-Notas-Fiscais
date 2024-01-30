@@ -4,6 +4,9 @@ namespace PrototipoLeitorTesseract.Extensions
 {
     public static class StringAddons
     {
+        public static string AddTesseractWhiteListCharacters(this string text)
+            => text.AddUpperAlphabet().AddLowerAlphabet().AddAccentVogals().AddNumbers().AddSpecialCharacters(" .,-$()|/:;");
+
         public static string AddUpperAlphabet(this string text) => text + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         public static string AddLowerAlphabet(this string text) => text + "abcdefghijklmnopqrstuvwxyz";

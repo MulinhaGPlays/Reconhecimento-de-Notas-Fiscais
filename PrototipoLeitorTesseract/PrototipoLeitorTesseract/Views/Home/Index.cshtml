@@ -108,19 +108,12 @@
                 <form id="formulario" method="post" enctype="multipart/form-data">
                     <div class="input-group">
                         <input type="file" name="image" accept="image/*" class="form-control" id="image" aria-describedby="enviarFormulario" aria-label="Upload" required>
-                        <button class="btn btn-outline-secondary" id="enviarFormulario" type="submit">Ler</button>
+                        <button class="btn btn-success px-5" id="enviarFormulario" type="submit">Ler</button>
                     </div>
                 </form>
-                <section>
-                    <h5>Resultado</h5>
-                    <div id="results">
-                        <p id="cnpj"></p>
-                        <p id="numeroCupom"></p>
-                        <p id="chaveCupom"></p>
-                        <p id="dataHoraCompra"></p>
-                        <p id="produtos"></p>
-                    </div>
-                    <div id="loader" class="loader">
+                <div class="col">
+                    <h5 class="text-danger" id="_error">Ocorreu um erro, tente novamente</h5>
+                    <div id="loader" class="loader mt-2">
                         <div class="bar1"></div>
                         <div class="bar2"></div>
                         <div class="bar3"></div>
@@ -134,15 +127,43 @@
                         <div class="bar11"></div>
                         <div class="bar12"></div>
                     </div>
-                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                </div>
+
+                <section id="results">
+                    <h5>Resultado</h5>
+                    <div>
+                        <div>
+                            <h6>CNPJ:</h6>
+                            <p id="cnpj"></p>
+                        </div>
+                        <div>
+                            <h6>Número do Cupom:</h6>
+                            <p id="numeroCupom"></p>
+                        </div>
+                        <div>
+                            <h6>Chave do Cupom:</h6>
+                            <p id="chaveCupom"></p>
+                        </div>
+                        <div>
+                            <h6>Data e Hora da Compra:</h6>
+                            <p id="dataHoraCompra"></p>
+                        </div>
+                        <div>
+                            <h6>Produtos:</h6>
+                            <div id="produtos"></div>
+                        </div>
+                    </div>
+                    <div class="accordion mt-3" id="accordionExample">
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                     Leitura Completa
                                 </button>
                             </h2>
-                            <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-                                <div id="_result" class="accordion-body"></div>
+                            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                                <div class="accordion-body">
+                                    <div id="_result" class="accordion-body"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -155,12 +176,15 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            $("#_error").hide();
+            $("#results").hide();
             $("#loader").hide();
 
             $("#image").change(function () {
                 exibirPrevisaoImagem(this);
             });
             $("#formulario").submit(function (event) {
+                $("#_error").hide();
                 $("#loader").show();
                 $("#_result").hide();
                 $("#results").hide();
@@ -184,13 +208,17 @@
                             $("#numeroCupom").text(success.numeroCupom);
                             $("#chaveCupom").text(success.chaveCupom);
                             $("#dataHoraCompra").text(success.dataHoraCompra);
-                            $("#produtos").text(success.produtos);
-
+                            $("#produtos").html("");
+                            success.produtos.forEach((produto, index) => {
+                                $("#produtos").append(`<p>${produto}</p>`)
+                            });
                             $("#_result").show();
                             $("#results").show();
                         },
                         error: function (error) {
                             console.log(error.result);
+                            $("#loader").hide();
+                            $("#_error").show();
                         }
                     });
                 }

@@ -15,14 +15,7 @@ namespace PrototipoLeitorTesseract.Services
         public string ReadImage(string path)
         {
             using var img = Pix.LoadFromFile(path);
-
-            _engine.SetVariable("tessedit_char_whitelist", String.Empty
-                .AddUpperAlphabet()
-                .AddLowerAlphabet()
-                .AddAccentVogals()
-                .AddNumbers()
-                .AddSpecialCharacters(" .,-$()|/:;"));
-
+            _engine.SetVariable("tessedit_char_whitelist", String.Empty.AddTesseractWhiteListCharacters());
             using var page = _engine.Process(img, PageSegMode.SingleBlock);
             string text = page.GetText();
 

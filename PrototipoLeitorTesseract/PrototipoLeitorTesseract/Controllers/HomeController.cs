@@ -48,11 +48,11 @@ namespace PrototipoLeitorTesseract.Controllers
                 { 
                     success = true, 
                     result = text.Replace("\n", "<br/>"),
-                    cnpj = text.RegexCNPJ(),
+                    cnpj = text.RegexPegarCNPJ(),
                     chaveCupom = text.RegexChaveCupom(),
-                    numeroCupom = text.RegexNumeroCupom(),
+                    numeroCupom = text.RegexPegarNumeroCupom(),
                     dataHoraCompra = text.RegexDataHoraCompra(),
-                    produtos = text.Replace("\n", " ").RegexDadosProdutos()
+                    produtos = text.Replace("\n", " ").RegexPegarDadosProdutos()
                 });
             }
             catch (Exception ex)
