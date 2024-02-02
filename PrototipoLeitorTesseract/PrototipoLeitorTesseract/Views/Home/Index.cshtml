@@ -105,6 +105,24 @@
         <div class="col-md-8">
             <div class="card-body">
                 <h4 class="card-title">@title</h4>
+                <div class="accordion mb-2">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <a class="accordion-button">
+                                (<strong>POST</strong>)&nbsp<strong>Endpoint:</strong>&nbsp;@Url.ActionLink("LerImagem", "NotaFiscal", null, Context.Request.Scheme, Context.Request.Host.Value)
+                            </a>
+                        </h2>
+                        <div class="accordion-collapse collapse show">
+                            <div class="accordion-body">
+                                <code>
+                                    {<br />
+                                    &emsp;&emsp;"base64String": "/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAYGBgYHBgcICAcK..."
+                                    <br />}
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <form id="formulario" method="post" enctype="multipart/form-data">
                     <div class="input-group">
                         <input type="file" name="image" accept="image/*" class="form-control" id="image" aria-describedby="enviarFormulario" aria-label="Upload" required>
@@ -202,7 +220,7 @@
                         processData: false,
                         success: function (success) {
                             $("#loader").hide();
-                            $("#_result").html(success.result);
+                            $("#_result").html(success.leituraCompleta);
 
                             $("#cnpj").text(success.cnpj);
                             $("#numeroCupom").text(success.numeroCupom);

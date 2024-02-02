@@ -18,13 +18,11 @@ namespace PrototipoLeitorTesseract.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly ImageService _imgService;
         private readonly TesseractService _tesService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController()
         {
-            _logger = logger;
             _imgService = new ImageService();
             _tesService = new TesseractService();
         }
@@ -40,24 +38,13 @@ namespace PrototipoLeitorTesseract.Controllers
         {
             try
             {
-                string path = await _imgService.ImageSaver(image);
-                string text = _tesService.ReadImage(path);
-                _imgService.DeleteImage();
-
-                return Json(new 
-                { 
-                    success = true, 
-                    result = text.Replace("\n", "<br/>"),
-                    cnpj = text.RegexPegarCNPJ(),
-                    chaveCupom = text.RegexChaveCupom(),
-                    numeroCupom = text.RegexPegarNumeroCupom(),
-                    dataHoraCompra = text.RegexDataHoraCompra(),
-                    produtos = text.Replace("\n", " ").RegexPegarDadosProdutos()
-                });
+                var bytes = await _imgService.ImageFormatter(image);
+                string text = _tesService.ReadImage(bytes);
+                return Json(new NotaFiscalViewModel(text, true));
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, result = ex.Message });
+                return BadRequest(new { success = false, result = ex.Message });
             }
         }
 

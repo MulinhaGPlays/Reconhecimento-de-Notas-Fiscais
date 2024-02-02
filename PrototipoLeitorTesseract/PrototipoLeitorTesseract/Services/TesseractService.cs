@@ -12,14 +12,20 @@ namespace PrototipoLeitorTesseract.Services
             _engine = new TesseractEngine(path, language, EngineMode.Default);
         }
 
-        public string ReadImage(string path)
+        public string ReadImage(byte[] bytes)
         {
-            using var img = Pix.LoadFromFile(path);
+            var img = Pix.LoadFromMemory(bytes);
+            img = this.ConfigureImage(img);
             _engine.SetVariable("tessedit_char_whitelist", String.Empty.AddTesseractWhiteListCharacters());
-            using var page = _engine.Process(img, PageSegMode.SingleBlock);
+            var page = _engine.Process(img, PageSegMode.SingleBlock);
             string text = page.GetText();
-
             return text;
+        }
+
+        public Pix ConfigureImage(Pix image)
+        {
+            image.Deskew();
+            return image;
         }
     }
 }

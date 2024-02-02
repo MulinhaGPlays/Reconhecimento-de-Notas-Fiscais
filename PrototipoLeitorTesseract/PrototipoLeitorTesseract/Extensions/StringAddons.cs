@@ -7,6 +7,10 @@ namespace PrototipoLeitorTesseract.Extensions
         public static string AddTesseractWhiteListCharacters(this string text)
             => text.AddUpperAlphabet().AddLowerAlphabet().AddAccentVogals().AddNumbers().AddSpecialCharacters(" .,-$()|/:;");
 
+        public static string TrocarQuebrasDeLinhaPorEspacos(this string text) => text.Replace("\n", " ");
+        public static string TrocarQuebrasDeLinhaPorHtmlBr(this string text) => text.Replace("\n", "<br/>");
+        public static string TrocarEspacosPorNada(this string text) => text.Replace(" ", "");
+
         public static string AddUpperAlphabet(this string text) => text + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         public static string AddLowerAlphabet(this string text) => text + "abcdefghijklmnopqrstuvwxyz";
